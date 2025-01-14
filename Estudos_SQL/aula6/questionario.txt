@@ -1,0 +1,15 @@
+1. Consultar a quantidade, valor total e valor total com desconto (25%) dos itens comprados par Maria Clara.
+2. Consultar quais brinquedos não tem itens em estoque.
+3. Consultar quais nome e descrições de produtos que não estão em pedidos
+4. Alterar a quantidade em estoque do faqueiro para 10 peças.
+5. Consultar Quantos clientes tem mais de 40 anos.
+6. Consultar Nome e telefone (Formatado XXXX-XXXX) dos fornecedores de Brinquedos e Chocolate.
+7. Consultar nome e desconto de 25% no preço dos produtos que custam menos de R$50,00
+8. Consultar nome e aumento de 10% no preço dos produtos que custam mais de R$100,00
+9. Consultar desconto de 15% no valor total de cada produto da venda 99001.
+10. Consultar Código do pedido, nome do cliente e idade atual do cliente
+11. Consultar o nome do fornecedor do produto mais caro
+12. Consultar a média dos valores cujos produtos ainda estão em estoque
+13. Consultar o nome do cliente, endereço composto por logradouro e número, o valor unitário do produto, o valor total (Quantidade * valor unitario) da compra do cliente de nome Maria Clara
+14. Considerando que o pedido de Maria Clara foi entregue 15/03/2023, consultar quantos dias houve de atraso. A cláusula do WHERE deve ser o nome da cliente.
+15. Consultar qual a nova data de entrega para o pedido de Alberto% sabendo que se pediu 9 dias a mais. A cláusula do WHERE deve ser o nome do cliente. A data deve ser exibida no formato dd/mm/aaaa.
