@@ -1,4 +1,4 @@
--- CriaÁ„o do banco
+-- Cria√ß√£o do banco
 CREATE DATABASE prova;
 GO
 
@@ -96,7 +96,7 @@ CREATE TABLE Horario (
     CodDepto CHAR(5),
     NumDisc INT,
     SiglaTurma CHAR(2),
-    DiaSemana INT,           -- 1=Dom, 2=Seg... atÈ 7
+    DiaSemana INT,           -- 1=Dom, 2=Seg... at√© 7
     HoraInicio INT,          -- Ex: 800, 1030, 1400
     NumSala INT,
     CodPred INT,
@@ -111,8 +111,8 @@ CREATE TABLE Horario (
 -- TURMA A
 -- CRIAR PROCEDURE COM APENAS UMA QUERY DE CURSOR PARA SELECIONAR:
 -- A quantidade de professores que tem turmas no 1o. semestre de 2025, 
--- agrupados por nome de TitulaÁ„o, cujo o nome do departamento seja diferente de 'Polimeros'. 
--- Listar apenas 3 titulaÁıes distintas.
+-- agrupados por nome de Titula√ß√£o, cujo o nome do departamento seja diferente de 'Polimeros'. 
+-- Listar apenas 3 titula√ß√µes distintas.
 CREATE PROCEDURE ListarProfessoresPorTitulacao
 AS
 BEGIN
@@ -120,7 +120,7 @@ BEGIN
         @NomeTit VARCHAR(40),
         @QtdProfessores INT;
 
-    -- Cursor para selecionar os dados desejados (limite de 3 titulaÁıes)
+    -- Cursor para selecionar os dados desejados (limite de 3 titula√ß√µes)
     DECLARE Cursor_Titulacoes CURSOR FOR
         SELECT TOP 3
             T.NomeTit,
@@ -141,7 +141,7 @@ BEGIN
 
     FETCH NEXT FROM Cursor_Titulacoes INTO @NomeTit, @QtdProfessores;
 
-    PRINT 'Nome da TitulaÁ„o | Qtd de Professores';
+    PRINT 'Nome da Titula√ß√£o | Qtd de Professores';
 
     WHILE @@FETCH_STATUS = 0
     BEGIN
@@ -160,7 +160,7 @@ EXEC ListarProfessoresPorTitulacao;
 
 -- CRIAR PROCEDURE COM APENAS UMA QUERY DE CURSOR PARA SELECIONAR:
 -- Selecionar a quantidade de turmas e nome do predio que tenham horarios em salas 
--- cujo a capacidade seja inferior a 30. Listar no m·ximo 4 prÈdios distintos.
+-- cujo a capacidade seja inferior a 30. Listar no m√°ximo 4 pr√©dios distintos.
 CREATE PROCEDURE ListarTurmasPorPredioComCapacidadeReduzida
 AS
 BEGIN
@@ -181,7 +181,7 @@ BEGIN
 
     FETCH NEXT FROM Cursor_Predios INTO @NomePredio, @QtdTurmas;
 
-    PRINT 'Nome do PrÈdio | Qtd de Turmas';
+    PRINT 'Nome do Pr√©dio | Qtd de Turmas';
 
     WHILE @@FETCH_STATUS = 0
     BEGIN
@@ -217,8 +217,8 @@ BEGIN
         INNER JOIN Professor P ON PT.CodProf = P.CodProf
         INNER JOIN Disciplina D ON T.CodDepto = D.CodDepto AND T.NumDisc = D.NumDisc
         INNER JOIN Depto DP ON D.CodDepto = DP.CodDepto
-        WHERE S.DescricaoSala = 'Sal„o Nobre'
-          AND DP.NomeDepto = 'Inform·tica'
+        WHERE S.DescricaoSala = 'Sal√£o Nobre'
+          AND DP.NomeDepto = 'Inform√°tica'
         ORDER BY D.NomeDisc;
 
     OPEN Cursor_Disciplinas;
@@ -239,3 +239,112 @@ END;
 GO
 
 EXEC ListarDisciplinasSalaoNobre;
+
+SELECT DISTINCT D.COD_DEPARTAMENTO
+FROM DEPARTAMENTO D
+JOIN DISCIPLINA DI ON D.COD_DEPARTAMENTO = DI.COD_DEPARTAMENTO
+JOIN TURMA T ON DI.ID_DISCIPLINA = T.ID_DISCIPLINA
+WHERE T.SEMESTRE = '2002/1';
+
+SELECT DISTINCT P.ID_PROFESSOR
+FROM PROFESSOR P
+JOIN TURMA T ON P.ID_PROFESSOR = T.ID_PROFESSOR
+WHERE P.COD_DEPARTAMENTO = 'INF01'
+  AND T.SEMESTRE = '2002/1';
+
+SELECT HT.DIA_SEMANA, HT.HORA_INICIO, HT.NUM_HORAS
+FROM PROFESSOR P
+JOIN TURMA T ON P.ID_PROFESSOR = T.ID_PROFESSOR
+JOIN HORARIO_TURMA HT ON T.ID_TURMA = HT.ID_TURMA
+WHERE P.NOME_PROFESSOR = 'Antunes'
+  AND T.SEMESTRE = '2002/1';
+
+SELECT DISTINCT D.NOME_DEPARTAMENTO
+FROM DEPARTAMENTO D
+JOIN DISCIPLINA DI ON D.COD_DEPARTAMENTO = DI.COD_DEPARTAMENTO
+JOIN TURMA T ON DI.ID_DISCIPLINA = T.ID_DISCIPLINA
+JOIN ALOCACAO_TURMA_SALA ATS ON T.ID_TURMA = ATS.ID_TURMA
+JOIN SALA S ON ATS.COD_PREDIO = S.COD_PREDIO AND ATS.NUMERO_SALA = S.NUMERO_SALA
+WHERE T.SEMESTRE = '2002/1'
+  AND S.NUMERO_SALA = '101'
+  AND S.NOME_PREDIO = 'Inform√°tica - aulas';
+
+SELECT P.ID_PROFESSOR
+FROM PROFESSOR P
+WHERE P.TITULO = 'Doutor'
+  AND P.ID_PROFESSOR NOT IN (
+    SELECT DISTINCT ID_PROFESSOR
+    FROM TURMA
+    WHERE SEMESTRE = '2002/1'
+  );
+
+SELECT DISTINCT S.COD_PREDIO, S.NUMERO_SALA
+FROM SALA S
+WHERE EXISTS (
+    SELECT 1
+    FROM TURMA T
+    JOIN DISCIPLINA D ON T.ID_DISCIPLINA = D.ID_DISCIPLINA
+    JOIN ALOCACAO_TURMA_SALA ATS ON ATS.ID_TURMA = T.ID_TURMA
+    JOIN HORARIO_TURMA HT ON HT.ID_TURMA = T.ID_TURMA
+    WHERE T.SEMESTRE = '2002/1'
+      AND D.COD_DEPARTAMENTO = 'Inform√°tica'
+      AND HT.DIA_SEMANA = 2
+      AND ATS.COD_PREDIO = S.COD_PREDIO AND ATS.NUMERO_SALA = S.NUMERO_SALA
+)
+AND EXISTS (
+    SELECT 1
+    FROM TURMA T
+    JOIN PROFESSOR P ON T.ID_PROFESSOR = P.ID_PROFESSOR
+    JOIN ALOCACAO_TURMA_SALA ATS ON ATS.ID_TURMA = T.ID_TURMA
+    JOIN HORARIO_TURMA HT ON HT.ID_TURMA = T.ID_TURMA
+    WHERE T.SEMESTRE = '2002/1'
+      AND P.NOME_PROFESSOR = 'Antunes'
+      AND HT.DIA_SEMANA = 4
+      AND ATS.COD_PREDIO = S.COD_PREDIO AND ATS.NUMERO_SALA = S.NUMERO_SALA
+);
+
+SELECT HT.DIA_SEMANA, HT.HORA_INICIO, HT.NUM_HORAS
+FROM TURMA T
+JOIN HORARIO_TURMA HT ON T.ID_TURMA = HT.ID_TURMA
+JOIN ALOCACAO_TURMA_SALA ATS ON T.ID_TURMA = ATS.ID_TURMA
+JOIN PROFESSOR P ON T.ID_PROFESSOR = P.ID_PROFESSOR
+WHERE P.NOME_PROFESSOR = 'Antunes'
+  AND T.SEMESTRE = '2002/1'
+  AND ATS.NUMERO_SALA = '101'
+  AND ATS.COD_PREDIO = '43423';
+
+SELECT DISTINCT P.ID_PROFESSOR, P.NOME_PROFESSOR, DP.NOME_DEPARTAMENTO AS DEPT_ORIGEM, DO.NOME_DEPARTAMENTO AS DEPT_OUTRO
+FROM PROFESSOR P
+JOIN DEPARTAMENTO DP ON P.COD_DEPARTAMENTO = DP.COD_DEPARTAMENTO
+JOIN TURMA T ON P.ID_PROFESSOR = T.ID_PROFESSOR
+JOIN DISCIPLINA D ON T.ID_DISCIPLINA = D.ID_DISCIPLINA
+JOIN DEPARTAMENTO DO ON D.COD_DEPARTAMENTO = DO.COD_DEPARTAMENTO
+WHERE DP.COD_DEPARTAMENTO <> DO.COD_DEPARTAMENTO;
+
+SELECT DISTINCT P.NOME_PROFESSOR, T1.ID_TURMA AS TURMA1, T2.ID_TURMA AS TURMA2
+FROM PROFESSOR P
+JOIN TURMA T1 ON P.ID_PROFESSOR = T1.ID_PROFESSOR
+JOIN HORARIO_TURMA H1 ON T1.ID_TURMA = H1.ID_TURMA
+JOIN TURMA T2 ON P.ID_PROFESSOR = T2.ID_PROFESSOR
+JOIN HORARIO_TURMA H2 ON T2.ID_TURMA = H2.ID_TURMA
+WHERE T1.ID_TURMA < T2.ID_TURMA
+  AND T1.SEMESTRE = T2.SEMESTRE
+  AND H1.DIA_SEMANA = H2.DIA_SEMANA
+  AND H1.HORA_INICIO = H2.HORA_INICIO;
+
+SELECT D1.NOME_DISCIPLINA AS DISCIPLINA, D2.NOME_DISCIPLINA AS PR
+
+SELECT D.NomeDisc
+FROM Disciplina D
+LEFT JOIN PreReq PR 
+    ON D.CodDepto = PR.CodDepto AND D.NumDisc = PR.NumDisc
+WHERE PR.CodDeptoPreReq IS NULL;
+
+SELECT D.NomeDisc
+FROM Disciplina D
+JOIN PreReq PR 
+    ON D.CodDepto = PR.CodDepto AND D.NumDisc = PR.NumDisc
+GROUP BY D.CodDepto, D.NumDisc, D.NomeDisc
+HAVING COUNT(*) >= 2;
+
+
