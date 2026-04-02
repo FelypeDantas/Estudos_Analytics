@@ -30,7 +30,7 @@ GO
 CREATE TABLE editora(
 ID_editora       INT            NOT NULL   IDENTITY(491, 16),
 nome             VARCHAR(70)    NOT NULL   UNIQUE,
-telefone         VARCHAR(11)    NOT NULL   CHECK(LEN(telefone) = 10),
+telefone         VARCHAR(11)    NOT NULL   CHECK(LEN(telefone) IN (10, 11)),
 logradouro       VARCHAR(200)   NOT NULL,
 numero           INT            NOT NULL   CHECK(numero > 0),
 CEP              CHAR(8)        NOT NULL   CHECK(LEN(CEP) = 8),
