@@ -14,7 +14,7 @@ CREATE TABLE autor(
 ID_autor     INT            NOT NULL   IDENTITY(2351, 1),
 nome         VARCHAR(100)   NOT NULL   UNIQUE,
 data_nasc    DATE           NOT NULL,
-pais_nasc    VARCHAR(50)    NOT NULL   CHECK(UPPER(pais_nasc) = 'Alemanha' OR UPPER(pais_nasc) = 'Brasil' OR UPPER(pais_nasc) = 'Estados Unidos' OR UPPER(pais_nasc) = 'Inglaterra'),
+pais_nasc    VARCHAR(50)    NOT NULL   CHECK(UPPER(pais_nasc) IN ('ALEMANHA', 'BRASIL', 'ESTADOS UNIDOS', 'INGLATERRA')),
 biografia    VARCHAR(255)   NOT NULL
 PRIMARY KEY(ID_autor)
 )
