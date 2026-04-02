@@ -40,7 +40,7 @@ PRIMARY KEY(ID_editora)
 GO
 CREATE TABLE edicao(
 isbn            CHAR(13)       NOT NULL  CHECK(LEN(isbn) = 13) ,
-preco           DECIMAL(4,2)   NOT NULL  CHECK(preco >= 0.0),
+preco           DECIMAL(10,2)   NOT NULL  CHECK(preco >= 0.0),
 ano             INT            NOT NULL  CHECK(ano >= 1993),
 numero_paginas  INT            NOT NULL  CHECK(numero_paginas > 15),
 qtd_estoque     INT            NOT NULL
